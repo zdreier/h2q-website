@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>myH2Q — The Smart Water Portal for Utilities</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink:        #0A1628;
+      --ink-2:      #1E3048;
+      --ink-3:      #4A6180;
+      --ink-4:      #8AA4BF;
+      --rule:       #D8E6F0;
+      --surface:    #FFFFFF;
+      --surface-2:  #F2F7FB;
+      --teal:       #0B7EA3;
+      --teal-light: #E6F5FA;
+      --teal-mid:   #A8DCF0;
+      --green:      #0F7B52;
+      --display:    'Plus Jakarta Sans', sans-serif;
+      --body:       'DM Sans', sans-serif;
+      --mono:       'DM Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--body); background: var(--surface); color: var(--ink); line-height: 1.6; overflow-x: hidden; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.93); backdrop-filter: blur(12px); border-bottom: 1px solid var(--rule); padding: 0 48px; height: 68px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-badge { width: 44px; height: 44px; border-radius: 12px; background: var(--ink); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .nav-wordmark { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; line-height: 1; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--ink-3); text-decoration: none; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--ink); }
+    .btn { display: inline-block; font-family: var(--body); cursor: pointer; border-radius: 8px; font-size: 14px; font-weight: 500; padding: 10px 22px; text-decoration: none; transition: background 0.15s, border-color 0.15s, transform 0.1s; border: none; }
+    .btn-primary { background: var(--ink); color: #fff; }
+    .btn-primary:hover { background: var(--teal); transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--rule); }
+    .btn-outline:hover { border-color: var(--ink); }
+    .btn-lg { padding: 14px 28px; font-size: 15px; border-radius: 10px; }
+    .btn-teal { background: var(--teal); color: #fff; }
+    .btn-teal:hover { background: #0A6A8A; }
+    .btn-ghost { background: transparent; color: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.2); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+    section { padding: 96px 48px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .eyebrow { font-size: 12px; font-weight: 600; color: var(--teal); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+    h2 { font-family: var(--display); font-size: clamp(28px, 4vw, 42px); font-weight: 700; letter-spacing: -0.02em; color: var(--ink); line-height: 1.15; margin-bottom: 16px; }
+    .sub { font-size: 17px; color: var(--ink-3); line-height: 1.7; max-width: 560px; }
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.2s; } .d3 { transition-delay: 0.3s; } .d4 { transition-delay: 0.4s; }
+    @keyframes ripple { 0% { box-shadow: 0 0 0 0 rgba(185,28,28,0.4); } 70% { box-shadow: 0 0 0 7px rgba(185,28,28,0); } 100% { box-shadow: 0 0 0 0 rgba(185,28,28,0); } }
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      section { padding: 64px 20px; }
+      .two-col { grid-template-columns: 1fr !important; gap: 40px !important; }
+      .three-col { grid-template-columns: 1fr 1fr !important; }
+      .four-col { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
+      .four-col::before { display: none !important; }
+      footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 580px) {
+      .three-col { grid-template-columns: 1fr !important; }
+      .four-col { grid-template-columns: 1fr !important; }
+      .form-row { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-badge">
+      <svg width="32" height="22" viewBox="0 0 32 22" fill="none">
+        <path d="M16 2 C16 2 7 11 7 15.5 C7 19.1 11.1 22 16 22 C20.9 22 25 19.1 25 15.5 C25 11 16 2 16 2Z" fill="#0B7EA3"/>
+        <circle cx="12" cy="14" r="3" fill="#A8DCF0"/>
+      </svg>
+    </div>
+    <span class="nav-wordmark">my<span style="color:var(--ink)">H</span><sub style="font-size:11px;vertical-align:sub;color:var(--teal);font-weight:700">2</sub><span style="color:var(--ink)">Q</span></span>
+    <span style="font-size:12px;font-weight:500;color:var(--ink-4);letter-spacing:0.01em;border-left:1px solid var(--rule);padding-left:12px;margin-left:4px">Your Water Headquarters</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div style="display:flex;gap:10px">
+    <a href="#contact" class="btn btn-primary">Request access</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="min-height:100vh;display:flex;align-items:center;padding-top:120px;position:relative;overflow:hidden">
+  <div style="background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);background-size:48px 48px;position:absolute;inset:0;opacity:0.35"></div>
+  <div style="position:absolute;top:-200px;right:-200px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(11,126,163,0.1) 0%,transparent 70%);pointer-events:none"></div>
+  <div class="container">
+    <div class="two-col" style="position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center">
+      <div class="reveal">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:24px">
+          <div style="display:inline-flex;align-items:center;gap:8px;background:var(--teal-light);border:1px solid var(--teal-mid);border-radius:99px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--teal);letter-spacing:0.06em;text-transform:uppercase">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0"></span>
+            Smart water infrastructure
+          </div>
+          <div style="display:inline-flex;align-items:center;gap:7px;background:#FDF3E7;border:1px solid #F5CFA0;border-radius:99px;padding:5px 14px;font-size:12px;font-weight:600;color:#92480A;letter-spacing:0.06em;text-transform:uppercase">
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none" style="flex-shrink:0">
+              <path d="M0.5 1.5 L0.5 8.5 L9.5 9.5 L13.5 9.5 L13.5 4.5 L11.5 1.5 Z" stroke="#92480A" stroke-width="1.2" fill="#FDE8C8" stroke-linejoin="round"/>
+            </svg>
+            Built in Colorado
+          </div>
+        </div>
+        <h1 style="font-family:var(--display);font-size:clamp(38px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-0.02em;color:var(--ink);margin-bottom:24px">Your customers deserve a smarter <span style="color:var(--teal)">water portal</span></h1>
+        <p style="font-size:18px;color:var(--ink-3);line-height:1.7;margin-bottom:36px;max-width:480px"><strong style="color:var(--ink)">Your Water Headquarters.</strong> myH<sub>2</sub>Q gives water utilities a modern, branded customer portal — powered by your AMI meter data. Leak alerts, drought awareness, usage insights, and billing in one place.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px">
+          <a href="#contact" class="btn btn-primary btn-lg">Request a demo</a>
+          <a href="#features" class="btn btn-outline btn-lg">See features</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="display:flex">
+            <div style="width:28px;height:28px;border-radius:50%;background:#E6F5FA;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--teal);margin-left:0">MW</div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#EAF3DE;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--green);margin-left:-6px">JT</div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#FDF3E7;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#92480A;margin-left:-6px">SR</div>
+          </div>
+          <span style="font-size:12px;color:var(--ink-4)">Built for utility teams · deployable in weeks</span>
+        </div>
+      </div>
+      <div class="reveal d2" style="background:var(--surface);border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 24px 64px rgba(10,22,40,0.12)">
+        <div style="background:var(--surface-2);border-bottom:1px solid var(--rule);padding:10px 14px;display:flex;align-items:center;gap:10px">
+          <div style="display:flex;gap:5px">
+            <div style="width:10px;height:10px;border-radius:50%;background:#FF5F57"></div>
+            <div style="width:10px;height:10px;border-radius:50%;background:#FFBD2E"></div>
+            <div style="width:10px;height:10px;border-radius:50%;background:#28C840"></div>
+          </div>
+          <div style="flex:1;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--ink-4);font-family:var(--mono);text-align:center">myh2q.com/portal</div>
+        </div>
+        <div style="padding:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:6px">
+              <div style="width:22px;height:22px;border-radius:5px;background:var(--ink);display:flex;align-items:center;justify-content:center">
+                <svg width="14" height="9" viewBox="0 0 14 9" fill="none"><text x="0" y="7" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" font-size="7" fill="white">H</text><text x="5" y="8.5" font-family="Plus Jakarta Sans,sans-serif" font-weight="700" font-size="4" fill="#A8DCF0">2</text><text x="8" y="7" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" font-size="7" fill="white">Q</text></svg>
+              </div>
+              <span style="font-family:var(--display);font-size:12px;font-weight:800;color:var(--ink)">myH<sub style="font-size:6px;color:var(--teal)">2</sub>Q</span>
+            </div>
+            <span style="font-size:10px;color:var(--ink-4);font-family:var(--mono)">WTR-004821 · Sarah M.</span>
+          </div>
+          <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <div style="width:7px;height:7px;border-radius:50%;background:#B91C1C;flex-shrink:0;animation:ripple 2s infinite"></div>
+            <span style="font-size:10px;color:#991B1B;font-weight:500">Leak detected — continuous flow 3.2 hrs overnight</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px">
+            <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:9px">
+              <div style="font-size:8px;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px">March usage</div>
+              <div style="font-size:16px;font-weight:700;color:var(--ink);font-family:var(--display);line-height:1">4,820</div>
+              <div style="font-size:8px;color:var(--ink-4);margin-top:2px">gal · +12% vs Feb</div>
+            </div>
+            <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:9px">
+              <div style="font-size:8px;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px">Daily avg</div>
+              <div style="font-size:16px;font-weight:700;color:var(--ink);font-family:var(--display);line-height:1">160</div>
+              <div style="font-size:8px;color:var(--ink-4);margin-top:2px">gal / day</div>
+            </div>
+            <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:9px">
+              <div style="font-size:8px;color:#991B1B;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px">Balance due</div>
+              <div style="font-size:16px;font-weight:700;color:#B91C1C;font-family:var(--display);line-height:1">$42.18</div>
+              <div style="font-size:8px;color:#991B1B;margin-top:2px">Due Apr 15</div>
+            </div>
+          </div>
+          <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:10px">
+            <div style="font-size:9px;font-weight:600;color:var(--ink-3);margin-bottom:7px">Daily usage — March 2026</div>
+            <div style="display:flex;align-items:flex-end;gap:3px;height:44px">
+              <div style="flex:1;height:46%;background:var(--teal);border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;height:51%;background:var(--teal);border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;height:71%;background:var(--teal);border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;height:47%;background:var(--teal);border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;height:100%;background:#EF4444;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;height:53%;background:var(--teal);border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;height:48%;background:var(--teal);border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;height:56%;background:var(--teal);border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;height:61%;background:var(--teal);border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;height:52%;background:var(--teal);border-radius:2px 2px 0 0"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<div id="logos" style="padding:40px 48px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:var(--surface-2)">
+  <div class="container">
+    <p style="text-align:center;font-size:11px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.1em">Built for forward-thinking water utilities</p>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="reveal" style="text-align:center;margin-bottom:48px">
+      <p class="eyebrow">Platform features</p>
+      <h2>Everything your customers need.<br>Everything your team wants.</h2>
+      <p class="sub" style="margin:0 auto">myH<sub>2</sub>Q connects directly to your AMI data feed and delivers a fully branded customer experience — no custom development required.</p>
+    </div>
+    <div class="three-col" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+      <div class="reveal d1" style="background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:28px;transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s">
+        <div style="width:44px;height:44px;border-radius:10px;background:var(--teal-light);border:1px solid var(--teal-mid);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px">💧</div>
+        <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px">Leak Detection</div>
+        <p style="font-size:14px;color:var(--ink-3);line-height:1.65">Continuous flow monitoring flags potential leaks automatically. Customers get notified the moment a problem is detected — before it becomes a costly repair.</p>
+      </div>
+      <div class="reveal d2" style="background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:28px;transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s">
+        <div style="width:44px;height:44px;border-radius:10px;background:var(--teal-light);border:1px solid var(--teal-mid);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px">📊</div>
+        <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px">Usage Insights</div>
+        <p style="font-size:14px;color:var(--ink-3);line-height:1.65">Hourly, daily, and monthly usage charts give customers full visibility into their water consumption — with neighborhood comparisons built in.</p>
+      </div>
+      <div class="reveal d3" style="background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:28px;transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s">
+        <div style="width:44px;height:44px;border-radius:10px;background:var(--teal-light);border:1px solid var(--teal-mid);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px">🔔</div>
+        <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px">Smart Alerts</div>
+        <p style="font-size:14px;color:var(--ink-3);line-height:1.65">SMS and email notifications for leak events, backflow, and billing — all customer-controlled, configurable, and delivered in plain language.</p>
+      </div>
+      <div class="reveal d1" style="background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:28px;transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s">
+        <div style="width:44px;height:44px;border-radius:10px;background:var(--teal-light);border:1px solid var(--teal-mid);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px">💳</div>
+        <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px">Billing &amp; Payment</div>
+        <p style="font-size:14px;color:var(--ink-3);line-height:1.65">Clear bill breakdowns, payment history, and one-tap payment. Reduce inbound calls and improve on-time payment rates across your customer base.</p>
+      </div>
+      <div class="reveal d2" style="background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:28px;transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s">
+        <div style="width:44px;height:44px;border-radius:10px;background:var(--teal-light);border:1px solid var(--teal-mid);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px">🎯</div>
+        <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px">Conservation Goals</div>
+        <p style="font-size:14px;color:var(--ink-3);line-height:1.65">Customers set monthly usage targets and track progress in real time. During drought conditions, goals automatically reflect utility-mandated reduction targets.</p>
+      </div>
+      <div class="reveal d3" style="background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:28px;transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s">
+        <div style="width:44px;height:44px;border-radius:10px;background:var(--teal-light);border:1px solid var(--teal-mid);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px">📡</div>
+        <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px">AMI-Native</div>
+        <p style="font-size:14px;color:var(--ink-3);line-height:1.65">Built on hourly meter reads. No manual entry, no retrofitting. If your meters transmit it, myH<sub>2</sub>Q surfaces it to your customers automatically.</p>
+      </div>
+      <div class="reveal d1" style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:14px;padding:28px;transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s">
+        <div style="width:44px;height:44px;border-radius:10px;background:#FEF9E7;border:1px solid #FCD34D;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px">🌵</div>
+        <div style="font-family:var(--display);font-size:16px;font-weight:700;color:#92400E;margin-bottom:8px">Drought Monitoring</div>
+        <p style="font-size:14px;color:#78350F;line-height:1.65">Real-time Colorado drought status (D0–D4), active water restriction notices, neighbor usage comparisons, and reduction progress tracking — all in the customer's portal.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" style="background:var(--surface-2)">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <p class="eyebrow">How it works</p>
+      <h2>Up and running in weeks, not months</h2>
+      <p class="sub" style="margin:0 auto 0">myH<sub>2</sub>Q is designed to connect to your existing AMI infrastructure with minimal IT lift.</p>
+    </div>
+    <div class="four-col" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-top:56px">
+      <div style="content:'';position:absolute;top:27px;left:12.5%;right:12.5%;height:1px;background:var(--rule);z-index:0"></div>
+      <div class="reveal d1" style="text-align:center;padding:0 16px;position:relative;z-index:1">
+        <div style="width:54px;height:54px;border-radius:50%;background:var(--surface);border:1.5px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:18px;font-weight:800;color:var(--teal);margin:0 auto 20px;box-shadow:0 2px 8px rgba(0,0,0,0.06)">1</div>
+        <div style="font-family:var(--display);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px">Connect your AMI feed</div>
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.6">We integrate with your existing meter data infrastructure — hourly reads, flags, and account data from all major platforms.</p>
+      </div>
+      <div class="reveal d2" style="text-align:center;padding:0 16px;position:relative;z-index:1">
+        <div style="width:54px;height:54px;border-radius:50%;background:var(--surface);border:1.5px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:18px;font-weight:800;color:var(--teal);margin:0 auto 20px;box-shadow:0 2px 8px rgba(0,0,0,0.06)">2</div>
+        <div style="font-family:var(--display);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px">Brand your portal</div>
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.6">Your logo, your colors, your domain. Customers see a portal that feels like it came directly from you.</p>
+      </div>
+      <div class="reveal d3" style="text-align:center;padding:0 16px;position:relative;z-index:1">
+        <div style="width:54px;height:54px;border-radius:50%;background:var(--surface);border:1.5px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:18px;font-weight:800;color:var(--teal);margin:0 auto 20px;box-shadow:0 2px 8px rgba(0,0,0,0.06)">3</div>
+        <div style="font-family:var(--display);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px">Invite your customers</div>
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.6">Send a simple activation link. Customers sign in, set their alert preferences, and they're live within minutes.</p>
+      </div>
+      <div class="reveal d4" style="text-align:center;padding:0 16px;position:relative;z-index:1">
+        <div style="width:54px;height:54px;border-radius:50%;background:var(--surface);border:1.5px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:18px;font-weight:800;color:var(--teal);margin:0 auto 20px;box-shadow:0 2px 8px rgba(0,0,0,0.06)">4</div>
+        <div style="font-family:var(--display);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px">Monitor &amp; improve</div>
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.6">Track engagement, alert volume, and conservation outcomes from your utility admin dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="reveal" style="text-align:center;margin-bottom:56px">
+      <p class="eyebrow">About us</p>
+      <div style="display:inline-flex;align-items:center;gap:8px;background:#FDF3E7;border:1px solid #F5CFA0;border-radius:99px;padding:6px 16px;margin-bottom:16px">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L8.5 5H13L9.5 7.5L11 11.5L7 9L3 11.5L4.5 7.5L1 5H5.5L7 1Z" fill="#92480A" stroke="#92480A" stroke-width="0.5" stroke-linejoin="round"/></svg>
+        <span style="font-size:12px;font-weight:700;color:#92480A;letter-spacing:0.04em">Veteran Owned Business</span>
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:8px;background:var(--teal-light);border:1px solid var(--teal-mid);border-radius:99px;padding:6px 16px;margin-bottom:16px;margin-left:8px">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" fill="#0B7EA3"/><path d="M3 6h6M6 3v6" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span style="font-size:12px;font-weight:700;color:var(--teal);letter-spacing:0.04em">Proudly Based in Colorado</span>
+      </div>
+      <h2>45 years in water. A decade in enterprise software.<br>Built myH<sub>2</sub>Q because we knew it was needed.</h2>
+      <p class="sub" style="margin:0 auto">We're not a software company that stumbled into water. We're water people who built the software.</p>
+    </div>
+    <div class="two-col reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start">
+      <div>
+        <p style="font-size:18px;font-weight:500;color:var(--ink);line-height:1.65;margin-bottom:20px">"45 years in the water industry. A decade building enterprise software at scale. We started myH<sub>2</sub>Q because between the two of us, we had everything needed to finally solve this problem."</p>
+        <p style="font-size:15px;color:var(--ink-3);line-height:1.8;margin-bottom:16px">Our founder spent 45 years working directly with metering manufacturers, utilities, and the infrastructure that keeps water flowing to homes and businesses across the country. He's worked hands-on with every major platform — <strong style="color:var(--ink);font-weight:600">Itron, Neptune, Badger Meter, Sensus, Kamstrup, and Aclara</strong> — and understands not just how the hardware works, but how to extract, interpret, and act on the data it produces.</p>
+        <p style="font-size:15px;color:var(--ink-3);line-height:1.8;margin-bottom:16px">His partner is a veteran and senior software engineer who spent the last decade building and scaling infrastructure at one of the world's largest e-commerce platforms — handling billions of dollars in transactions for millions of businesses globally. He brings the engineering depth to match the industry knowledge.</p>
+        <p style="font-size:15px;color:var(--ink-3);line-height:1.8;margin-bottom:16px">We've seen firsthand what happens when meter data sits locked inside a system that only engineers can access. Leaks go undetected for weeks. Customers get surprise bills. Utilities field thousands of calls that could have been prevented with a simple notification.</p>
+        <p style="font-size:15px;color:var(--ink-3);line-height:1.8;margin-bottom:24px">Based in Colorado, we've watched drought conditions intensify across the state and seen how utilities struggle to communicate usage restrictions to their customers. myH<sub>2</sub>Q puts that information directly in their hands.</p>
+        <a href="#contact" class="btn btn-primary btn-lg">Talk to our team</a>
+      </div>
+      <div>
+        <div style="background:var(--teal-light);border:1px solid var(--teal-mid);border-radius:14px;padding:24px;margin-bottom:14px">
+          <div style="font-family:var(--display);font-size:48px;font-weight:800;color:var(--teal);letter-spacing:-0.03em;line-height:1;margin-bottom:6px">45</div>
+          <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px">Years in the water industry — founding partner</div>
+          <div style="font-size:13px;color:var(--ink-3);line-height:1.5">Direct experience with metering manufacturers, AMI infrastructure, and utility operations from the ground up.</div>
+        </div>
+        <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:14px;padding:18px 20px;margin-bottom:14px">
+          <div style="font-size:10px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">Platforms we know inside and out</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span style="font-size:12px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:5px 12px">Itron</span>
+            <span style="font-size:12px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:5px 12px">Neptune</span>
+            <span style="font-size:12px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:5px 12px">Badger Meter</span>
+            <span style="font-size:12px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:5px 12px">Sensus</span>
+            <span style="font-size:12px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:5px 12px">Kamstrup</span>
+            <span style="font-size:12px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:5px 12px">Aclara</span>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:12px;padding:18px">
+            <div style="font-size:20px;margin-bottom:8px">🌵</div>
+            <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px">Drought-ready</div>
+            <div style="font-size:12px;color:var(--ink-3);line-height:1.5">During water scarcity, end-user awareness isn't a nice-to-have — it's critical infrastructure.</div>
+          </div>
+          <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:12px;padding:18px">
+            <div style="font-size:20px;margin-bottom:8px">📡</div>
+            <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px">AMI-native</div>
+            <div style="font-size:12px;color:var(--ink-3);line-height:1.5">Built around your data feed — not a generic SaaS template bolted onto it.</div>
+          </div>
+          <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:12px;padding:18px">
+            <div style="font-size:20px;margin-bottom:8px">🔧</div>
+            <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px">Metering expertise</div>
+            <div style="font-size:12px;color:var(--ink-3);line-height:1.5">We know how each platform structures its data and what it takes to surface it to end users.</div>
+          </div>
+          <div style="background:var(--surface-2);border:1px solid var(--rule);border-radius:12px;padding:18px">
+            <div style="font-size:20px;margin-bottom:8px">💡</div>
+            <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px">Data rules</div>
+            <div style="font-size:12px;color:var(--ink-3);line-height:1.5">The insights are already in your meters. We make sure they reach the people who need them.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:48px;background:var(--ink);border-radius:16px;padding:36px 40px;display:flex;gap:20px;align-items:flex-start">
+      <div style="font-size:52px;line-height:1;color:var(--teal);font-family:var(--display);font-weight:800;flex-shrink:0;margin-top:-10px">"</div>
+      <div>
+        <p style="font-size:17px;font-weight:500;color:#fff;line-height:1.65;margin-bottom:10px">Data rules the world. Water utilities are sitting on some of the most actionable data in any industry — and most of their customers have no idea it exists. myH<sub>2</sub>Q changes that.</p>
+        <p style="font-size:12px;color:rgba(255,255,255,0.4);letter-spacing:0.05em;text-transform:uppercase;font-weight:500">The myH<sub>2</sub>Q founders &nbsp;·&nbsp; 45 years in water · enterprise software at scale</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="background:var(--surface-2)">
+  <div class="container">
+    <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start">
+      <div class="reveal">
+        <p class="eyebrow">Get in touch</p>
+        <h2>Ready to modernize your customer portal?</h2>
+        <p class="sub" style="margin-bottom:36px">Tell us about your utility and we'll show you exactly how myH<sub>2</sub>Q would work with your existing infrastructure.</p>
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <div style="width:42px;height:42px;border-radius:10px;background:var(--teal-light);border:1px solid var(--teal-mid);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🗓️</div>
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px">Schedule a demo</div>
+              <div style="font-size:13px;color:var(--ink-3)">30-minute walkthrough of the full platform with your team. We'll tailor it to your meter setup.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <div style="width:42px;height:42px;border-radius:10px;background:var(--teal-light);border:1px solid var(--teal-mid);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🔌</div>
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px">Integration assessment</div>
+              <div style="font-size:13px;color:var(--ink-3)">We'll review your AMI setup and confirm compatibility before any commitment.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <div style="width:42px;height:42px;border-radius:10px;background:var(--teal-light);border:1px solid var(--teal-mid);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✉️</div>
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dcb4b9b0b0b39cb1a5b4eeadf2bfb3b1">[email&#160;protected]</a></div>
+              <div style="font-size:13px;color:var(--ink-3)">Prefer email? We respond within one business day.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal d2" style="background:var(--surface);border:1px solid var(--rule);border-radius:16px;padding:36px">
+        <h3 style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:24px;letter-spacing:-0.01em">Request access</h3>
+        <form id="contact-form" action="https://formspree.io/f/xbdpyezb" method="POST">
+          <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="margin-bottom:14px">
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">First name</label>
+              <input type="text" name="first_name" placeholder="Jane" required style="width:100%;padding:10px 13px;font-size:14px;border:1px solid var(--rule);border-radius:8px;background:var(--surface);color:var(--ink);font-family:var(--body);outline:none"/>
+            </div>
+            <div style="margin-bottom:14px">
+              <label style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Last name</label>
+              <input type="text" name="last_name" placeholder="Smith" required style="width:100%;padding:10px 13px;font-size:14px;border:1px solid var(--rule);border-radius:8px;background:var(--surface);color:var(--ink);font-family:var(--body);outline:none"/>
+            </div>
+          </div>
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Work email</label>
+            <input type="email" name="email" placeholder="jane@metrowater.com" required style="width:100%;padding:10px 13px;font-size:14px;border:1px solid var(--rule);border-radius:8px;background:var(--surface);color:var(--ink);font-family:var(--body);outline:none"/>
+          </div>
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Utility name</label>
+            <input type="text" name="utility_name" placeholder="Metro Water District" style="width:100%;padding:10px 13px;font-size:14px;border:1px solid var(--rule);border-radius:8px;background:var(--surface);color:var(--ink);font-family:var(--body);outline:none"/>
+          </div>
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Number of accounts</label>
+            <select name="account_count" style="width:100%;padding:10px 13px;font-size:14px;border:1px solid var(--rule);border-radius:8px;background:var(--surface);color:var(--ink);font-family:var(--body);outline:none">
+              <option value="">Select range</option>
+              <option>Under 5,000</option>
+              <option>5,000 – 25,000</option>
+              <option>25,000 – 100,000</option>
+              <option>100,000+</option>
+            </select>
+          </div>
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">AMI system (if known)</label>
+            <input type="text" name="ami_system" placeholder="e.g. Itron, Sensus, Badger Meter…" style="width:100%;padding:10px 13px;font-size:14px;border:1px solid var(--rule);border-radius:8px;background:var(--surface);color:var(--ink);font-family:var(--body);outline:none"/>
+          </div>
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Anything else?</label>
+            <textarea name="message" placeholder="Tell us about your current customer portal setup or any specific needs…" style="width:100%;padding:10px 13px;font-size:14px;border:1px solid var(--rule);border-radius:8px;background:var(--surface);color:var(--ink);font-family:var(--body);outline:none;resize:vertical;min-height:88px"></textarea>
+          </div>
+          <button id="submit-btn" type="submit" class="btn btn-primary btn-lg" style="width:100%;margin-top:4px;text-align:center">Send request</button>
+        </form>
+        <div id="form-success" style="display:none;text-align:center;padding:24px 0">
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--teal-light);border:1px solid var(--teal-mid);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 11.5l5 5L18 6" stroke="#0B7EA3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div style="font-family:var(--display);font-size:18px;font-weight:700;color:var(--ink);margin-bottom:6px">Request sent!</div>
+          <div style="font-size:14px;color:var(--ink-3)">Thanks for reaching out. We'll be in touch within one business day.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:var(--ink);padding:32px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+  <div style="font-family:var(--display);font-size:16px;font-weight:800;color:rgba(255,255,255,0.75)">myH<sub style="font-size:9px;color:var(--teal-mid)">2</sub>Q — Your Water HQ</div>
+  <div style="display:flex;gap:24px">
+    <a href="#features" style="font-size:13px;color:rgba(255,255,255,0.35);text-decoration:none">Features</a>
+    <a href="#how" style="font-size:13px;color:rgba(255,255,255,0.35);text-decoration:none">How it works</a>
+    <a href="#contact" style="font-size:13px;color:rgba(255,255,255,0.35);text-decoration:none">Contact</a>
+  </div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.25)">© 2026 myH2Q. All rights reserved.</div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  const form = document.getElementById('contact-form');
+  if (form) {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          form.style.display = 'none';
+          document.getElementById('form-success').style.display = 'block';
+        } else {
+          btn.textContent = 'Something went wrong — try again';
+          btn.disabled = false;
+        }
+      } catch {
+        btn.textContent = 'Something went wrong — try again';
+        btn.disabled = false;
+      }
+    });
+  }
+</script>
+</body>
+</html>
